@@ -30,6 +30,12 @@ def run_kfold(model: ee.Classifier, training_data: ee.FeatureCollection, **kwarg
         trained_model = model.train(features=train, **kwargs)
         train_result = train.classify(trained_model)
         test_result = test.classify(trained_model)
-        results.append((trained_model, train_result, test_result))
+        results.append(
+            dict(
+                model=trained_model,
+                classified_training_set=train_result,
+                classified_test_set=test_result,
+            )
+        )
 
     return results

@@ -22,11 +22,28 @@ def test_sets(training_data):
 
 
 def test_kfold(training_data):
-    model = ee.Classifier.smileRandomForest(10)
+    k = 10
+    model = ee.Classifier.smileRandomForest(k)
     results = run_kfold(model, training_data, classProperty="y", inputProperties=["X"])
 
+    assert len(results) == k
+
+    some_keys = list(results[0].keys())
+    some_keys.sort()
+
+    assert some_keys == [
+        "classified_test_set",
+        "classified_training_set",
+        "model",
+    ]
+
     mean_accuracy = fmean(
-        [r[2].errorMatrix("y", "classification").accuracy().getInfo() for r in results]
+        [
+            r["classified_test_set"]
+            .errorMatrix("y", "classification")
+            .accuracy()
+            .getInfo()
+            for r in results
+        ]
     )
-    print(mean_accuracy)
-    breakpoint()
+    assert isinstance(mean_accuracy, float)
