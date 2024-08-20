@@ -14,7 +14,7 @@ def sets(training_data: ee.FeatureCollection, k: int = 10, seed: int | float = 1
                 )
             ),
             training_data.filter(
-                ee.Filter.Or(
+                ee.Filter.And(
                     ee.Filter.gte("r", i * test_proportion),
                     ee.Filter.lt("r", (i + 1) * test_proportion),
                 )
